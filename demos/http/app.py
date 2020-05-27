@@ -23,9 +23,9 @@ app.secret_key = os.getenv('SECRET_KEY', 'secret string')
 @app.route('/')
 @app.route('/hello')
 def hello():
-    name = request.args.get('name')
+    name = request.args.get('name')  # 在URL中找name变量
     if name is None:
-        name = request.cookies.get('name', 'Human')
+        name = request.cookies.get('name', 'Human') # 在 cookies中找name
     response = '<h1>Hello, %s!</h1>' % escape(name)  # escape name to avoid XSS
     # return different response according to the user's authentication status
     if 'logged_in' in session:

@@ -30,7 +30,7 @@ def say_hello():
 def greet(name):
     return '<h1>Hello, %s!</h1>' % name
 
-
+# 自定义Flask命令    不怎么用吧
 # custom flask cli command
 @app.cli.command()
 def hello():

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% block head%}
+            <meta charset="utf-8">
+            <title>{%block title%}Template-HelloFlask{%endblock title%}</title>
+            <link rel="icon" type="image/x-icon" href="{{url_for('static',filename='img/favicon.png')}}">
+            {%block styles%}{%endblock styles%}
+        {%endblock head%}
+    </head>
+    <body>
+        <nav>
+            <ul><li><a href="{{url_for('instal')}}">Home</a></li></ul>
+        </nav>
+        <main>
+            {%block content%}{%endblock content%}
+        </main>
+        <footer>
+            {%block footer%}
+            {%endblock footer%}
+        </footer>
+        {%block scripts%}{%endblock scripts%}
+    </body>
+</html>
