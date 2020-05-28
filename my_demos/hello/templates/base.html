@@ -9,13 +9,15 @@
         {%endblock head%}
     </head>
     <body>
-        <nav>
-            <ul><li><a href="{{url_for('instal')}}">Home</a></li></ul>
+        <nav style="text-align:center;">
+            <li><a href="{{url_for('instal')}}">Home</a></li>
         </nav>
+        <hr>
         <main>
             {%block content%}{%endblock content%}
         </main>
         <footer>
+            <hr>
             {%block footer%}
             {%endblock footer%}
         </footer>

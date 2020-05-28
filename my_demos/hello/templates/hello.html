@@ -1,4 +1,4 @@
-{%extends 'base.html'%}
+{%extends 'instal.html'%}
 {%block title%}
 Hi,{{name}}
 {%endblock title%}
@@ -6,5 +6,6 @@ Hi,{{name}}
 {%block content%}
 <ul>
     <li>Hello,{{name}}</li>
+    <li><a href="{{my_url[0]}}">返回</a></li>
 </ul>
 {%endblock content%}

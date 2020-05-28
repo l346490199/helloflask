@@ -26,7 +26,7 @@ def hello():
     name = request.args.get("name", "Flask")
     if name == "Flask":
         name = request.cookies.get('name','Flask')
-    response = make_response(render_template("hello.html", name=name))
+    response = make_response(render_template("hello.html", name=name,my_url=[request.referrer]))
     return response
 
 
