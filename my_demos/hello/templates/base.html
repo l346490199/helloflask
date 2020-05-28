@@ -5,12 +5,14 @@
             <meta charset="utf-8">
             <title>{%block title%}Template-HelloFlask{%endblock title%}</title>
             <link rel="icon" type="image/x-icon" href="{{url_for('static',filename='img/favicon.png')}}">
-            {%block styles%}{%endblock styles%}
+            {%block styles%}
+            <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css' ) }}">
+            {%endblock styles%}
         {%endblock head%}
     </head>
     <body>
-        <nav style="text-align:center;">
-            <li><a href="{{url_for('instal')}}">Home</a></li>
+        <nav>
+            <ul><li><a href="{{url_for('instal')}}">Home</a></li></ul>
         </nav>
         <hr>
         <main>
