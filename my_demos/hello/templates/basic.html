@@ -1,0 +1,22 @@
+{%extends 'instal.html'%}
+{%block title%}
+Landing
+{%endblock title%}
+{%block content%}
+<h1>
+    Basic style Form
+</h1>
+<form method='POST'>
+    {{form.csrf_token}}
+    {{form.username.label}}<br>{{form.username}}<br>
+    {%for message in form.username.errors%}
+        <small class="ex">{{message}}</small><br>
+    {%endfor%}
+    {{form.password.label}}<br>{{form.password}}<br>
+    {%for message in form.password.errors%}
+        <small class="ex">{{message}}</small><br>
+    {%endfor%}
+    {{form.remember}}{{form.remember.label}}<br>
+    {{form.submit}}<br>
+</form>
+{%endblock content%}

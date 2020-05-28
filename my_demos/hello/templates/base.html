@@ -1,28 +1,39 @@
+{%from "macros.html" import static_file%}
 <!DOCTYPE html>
 <html>
     <head>
         {% block head%}
             <meta charset="utf-8">
-            <title>{%block title%}Template-HelloFlask{%endblock title%}</title>
-            <link rel="icon" type="image/x-icon" href="{{url_for('static',filename='img/favicon.png')}}">
+            <title>{%block title%}欢迎界面{%endblock title%}</title>
+            {{static_file("icon","img/favicon.png")}}
             {%block styles%}
-            <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css' ) }}">
+            {{static_file('css','style.css')}}
             {%endblock styles%}
         {%endblock head%}
     </head>
     <body>
         <nav>
-            <ul><li><a href="{{url_for('instal')}}">Home</a></li></ul>
+            <ul><li><a href="{{url_for('instal')}}" title="回家去吧">Home</a></li></ul>
         </nav>
         <hr>
         <main>
+            {%for message in get_flashed_messages()%}
+                <div class="alert">{{message}}</div>
+            {%endfor%}
             {%block content%}{%endblock content%}
         </main>
         <footer>
             <hr>
             {%block footer%}
+            <small> &copy; 2020 <a href="http://aqiu.info" title="Written by Q Liu">Q Liu</a> /
+                <a href="https://github.com/greyli/helloflask" title="Fork me on GitHub">GitHub</a> /
+                <a href="http://helloflask.com" title="A HelloFlask project">HelloFlask</a>
+            </small>
+
             {%endblock footer%}
         </footer>
-        {%block scripts%}{%endblock scripts%}
+        {%block scripts%}
+
+        {%endblock scripts%}
     </body>
 </html>

@@ -4,7 +4,7 @@
     author: LiuQiu
 '''
 
-from flask import Flask, request, render_template, redirect, url_for, abort,make_response
+from flask import Flask, request, render_template, redirect, url_for, abort,make_response, flash
 import os
 
 app = Flask(__name__)
@@ -61,3 +61,22 @@ def set_cookie(name):
     response.set_cookie('name',name)
     return response
 
+###############################################################################    
+# 表格
+@app.route('/html',methods=['GET',"POST"])
+def html():
+    return render_template("html_form.html")
+
+from forms import LoginForm
+
+@app.route('/basic',methods=['GET',"POST"])
+def basic():
+    form = LoginForm()
+    # if request.method=="POST" and form.validate():
+    if form.validate_on_submit():
+        username= form.username.data
+        flash('Welcome home,{0}'.format(username))
+        return redirect(url_for('hello')+'?name={0}'.format(username))
+    else:
+        pass
+    return render_template('basic.html',form=form)
