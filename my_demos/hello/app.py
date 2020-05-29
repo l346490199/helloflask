@@ -68,7 +68,7 @@ def set_cookie(name):
 def html():
     return render_template("html_form.html")
 
-from forms import LoginForm
+from forms import LoginForm,UploadForm
 
 @app.route('/basic',methods=['GET',"POST"])
 def basic():
@@ -81,3 +81,14 @@ def basic():
     else:
         pass
     return render_template('basic.html',form=form)
+
+
+#上传文件
+@app.route('/upload',methods=['GET','POST'])
+def upload():
+    form = UploadForm()
+    if form.validate_on_submit():
+        return redirect(url_for('hello'))
+    else:
+        pass
+    return render_template('upload.html',form=form)

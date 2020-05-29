@@ -1,17 +1,15 @@
 {%extends 'instal.html'%}
 {%from 'macros.html' import form_field%}
 {%block title%}
-Landing
+Upload
 {%endblock title%}
 {%block content%}
 <h1>
-    Basic style Form
+    Upload
 </h1>
-<form method='POST'>
+<form method='POST' enctype="multipart/form-data">
     {{form.csrf_token}}
-    {{form_field(form.username)}}
-    {{form_field(form.password)}}
-    {{form.remember}}{{form.remember.label}}<br>
+    {{form_field(form.photo)}}
     {{form.submit}}<br>
 </form>
 {%endblock content%}
