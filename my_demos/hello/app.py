@@ -9,6 +9,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key=os.getenv('SECRET_KEY',"secret_key")
+app.config['WTF_I18N_ENABLED']=False  # 错误信息中文相关设定
 
 @app.route('/')
 def instal():
