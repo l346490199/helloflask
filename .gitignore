@@ -117,3 +117,4 @@ demos/form/uploads/*
 !demos/form/uploads/.gitkeep
 .vscode
 .vscode/settings.json
+my_demos\hello\uploads
