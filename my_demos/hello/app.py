@@ -82,7 +82,11 @@ from forms import LoginForm, UploadForm
 def basic():
     form = LoginForm()
     # if request.method=="POST" and form.validate():
+<<<<<<< HEAD
     if form.validate_on_submit(): # 验证
+=======
+    if form.validate_on_submit():
+>>>>>>> 6cdf024f772f4a5ac09ea7f22de6d6f78bf296f9
         username = form.username.data
         flash('Welcome home,{0}'.format(username))
         response = make_response(redirect(url_for('hello')))
