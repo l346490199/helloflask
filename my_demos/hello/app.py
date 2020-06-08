@@ -4,7 +4,7 @@
     author: LiuQiu
 '''
 
-from flask import Flask, request, render_template, redirect, url_for, abort, make_response, flash
+from flask import Flask, request, render_template, session, redirect, url_for, abort, make_response, flash
 import os
 
 app = Flask(__name__)
@@ -76,21 +76,20 @@ def html():
 
 
 from forms import LoginForm, UploadForm
-
+from flask import send_from_directory
+import uuid
+import numpy as np
+import pandas as pd
 
 @app.route('/basic', methods=['GET', "POST"])
 def basic():
     form = LoginForm()
     # if request.method=="POST" and form.validate():
-<<<<<<< HEAD
-    if form.validate_on_submit(): # 验证
-=======
-    if form.validate_on_submit():
->>>>>>> 6cdf024f772f4a5ac09ea7f22de6d6f78bf296f9
+    if form.validate_on_submit():  # 验证
         username = form.username.data
         flash('Welcome home,{0}'.format(username))
         response = make_response(redirect(url_for('hello')))
-        response.set_cookie('name',username)
+        response.set_cookie('name', username)
 
         return response
     else:
@@ -98,12 +97,57 @@ def basic():
     return render_template('basic.html', form=form)
 
 
+# 存储地址
+app.config["UPLOAD_PATH"] = os.path.join(app.root_path, "uploads")
+UPLOAD_FILES = []
+
+
 #上传文件
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     form = UploadForm()
-    if form.validate_on_submit(): # 验证
-        return redirect(url_for('hello'))
+    if form.validate_on_submit():  # 验证
+        f = form.photo.data
+        # f.flename获取文件名 random_filename 同一命名
+        filename = random_filename(f.filename)  
+        f.save(os.path.join(app.config['UPLOAD_PATH'], filename)) # 存储
+        flash('Upload success.')  # 显示短语存储
+        UPLOAD_FILES.append(filename)
+        print(UPLOAD_FILES)
+        session['filenames'] = [filename] # 在cookie中加密session中存储文件名
+        return redirect(url_for('show_images'))
     else:
         pass
     return render_template('upload.html', form=form)
+
+
+def random_filename(filename):
+    """同一命名文件
+
+    Args:
+        filename (string): 文件名称
+
+    Returns:
+        new_filename(string): [新文件名称]
+    """
+    ext = os.path.splitext(filename)[1]
+    # uuid4 第四版UUID 不接收参数而生成随机UUID
+    new_filename = uuid.uuid4().hex + ext
+    return new_filename
+
+@app.route('/upload/<path:filename>')
+def get_file(filename):
+    # send_from_directory 获取文件的函数 传入地址和文件名
+    return send_from_directory(app.config["UPLOAD_PATH"], filename)
+
+@app.route('/uploaded-images')
+def show_images():
+    """显示传入文件的视图
+
+    """
+    return render_template('uploaded.html')
+
+
+@app.route('/upload/file')
+def files():
+    return render_template("show_file.html",filenames=UPLOAD_FILES)
