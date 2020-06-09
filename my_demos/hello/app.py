@@ -78,8 +78,6 @@ def html():
 from forms import LoginForm, UploadForm
 from flask import send_from_directory
 import uuid
-import numpy as np
-import pandas as pd
 
 @app.route('/basic', methods=['GET', "POST"])
 def basic():
@@ -99,7 +97,6 @@ def basic():
 
 # 存储地址
 app.config["UPLOAD_PATH"] = os.path.join(app.root_path, "uploads")
-UPLOAD_FILES = []
 
 
 #上传文件
@@ -112,8 +109,6 @@ def upload():
         filename = random_filename(f.filename)  
         f.save(os.path.join(app.config['UPLOAD_PATH'], filename)) # 存储
         flash('Upload success.')  # 显示短语存储
-        UPLOAD_FILES.append(filename)
-        print(UPLOAD_FILES)
         session['filenames'] = [filename] # 在cookie中加密session中存储文件名
         return redirect(url_for('show_images'))
     else:
@@ -147,7 +142,42 @@ def show_images():
     """
     return render_template('uploaded.html')
 
+# 上传多个文件
+from forms import MultiUploadForm
+from wtforms import ValidationError   # 验证错误
+from flask_wtf.csrf import validate_csrf  # 验证csrf令牌
 
-@app.route('/upload/file')
-def files():
-    return render_template("show_file.html",filenames=UPLOAD_FILES)
+@app.route('/multi-upload',methods=["GET","POST"])
+def multi_upload():
+    form=MultiUploadForm()
+    # 检查csrf令牌
+    if request.method == 'POST':
+        filenames = []
+        try:
+            validate_csrf(form.csf_token.data)
+        except ValidationError:
+            flash("CSRF token error")
+            return redirect(url_for('multi_upload'))
+        # 检车文件是否存在
+        if 'photo' not in request.files:
+            flash("This field is required.")
+            return redirect(url_for('multi_upload'))
+        
+        for f in request.files.getlist("photo"):
+            # 检查文件类型
+            if f and allowed_file(f.filename):
+                filename = random_filename(f.filename)
+                f.save(os.path.join(app.config["UPLOAD_PATH"],filename))
+                filenames.append(filename)
+            else:
+                flash("Invalid file type.")
+                return redirect(url_for("multi_upload"))
+        flash("Upload success.")
+        session["filenames"] = filenames
+        return redirect(url_for("show_images"))
+    return render_template("upload.html", form=form)
+
+app.config["ALLOWED_EXTENSIONS"] = ['png','jpg','jpeg','gif']
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit(".",1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]

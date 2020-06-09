@@ -5,7 +5,7 @@
 # @email lq@aqiu.info
 # @description
 # @created 2020-05-28T11:35:25.791Z+08:00
-# @last-modified 2020-06-08T13:06:55.264Z+08:00
+# @last-modified 2020-06-09T14:45:28.263Z+08:00
 #
 
 from flask_wtf import FlaskForm
@@ -37,4 +37,17 @@ class UploadForm(MyBaseForm):
                     FileRequired(),
                     FileAllowed(['jpg', 'jpeg', 'png', 'gif'])
                 ])
+    submit = SubmitField()
+
+
+############
+# 上传多个文件
+from wtforms import MultipleFileField
+class MultiUploadForm(FlaskForm):
+    """上传多个文件
+
+    Args:
+        FlaskForm ([type]): [description]
+    """
+    photo = MultipleFileField("Upload Image", validators=[DataRequired()])
     submit = SubmitField()
