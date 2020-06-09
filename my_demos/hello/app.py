@@ -154,7 +154,7 @@ def multi_upload():
     if request.method == 'POST':
         filenames = []
         try:
-            validate_csrf(form.csf_token.data)
+            validate_csrf(form.csrf_token.data)
         except ValidationError:
             flash("CSRF token error")
             return redirect(url_for('multi_upload'))
