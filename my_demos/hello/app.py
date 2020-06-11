@@ -79,6 +79,7 @@ from forms import LoginForm, UploadForm
 from flask import send_from_directory
 import uuid
 
+
 @app.route('/basic', methods=['GET', "POST"])
 def basic():
     form = LoginForm()
@@ -106,10 +107,10 @@ def upload():
     if form.validate_on_submit():  # 验证
         f = form.photo.data
         # f.flename获取文件名 random_filename 同一命名
-        filename = random_filename(f.filename)  
-        f.save(os.path.join(app.config['UPLOAD_PATH'], filename)) # 存储
+        filename = random_filename(f.filename)
+        f.save(os.path.join(app.config['UPLOAD_PATH'], filename))  # 存储
         flash('Upload success.')  # 显示短语存储
-        session['filenames'] = [filename] # 在cookie中加密session中存储文件名
+        session['filenames'] = [filename]  # 在cookie中加密session中存储文件名
         return redirect(url_for('show_images'))
     else:
         pass
@@ -130,10 +131,12 @@ def random_filename(filename):
     new_filename = uuid.uuid4().hex + ext
     return new_filename
 
+
 @app.route('/upload/<path:filename>')
 def get_file(filename):
     # send_from_directory 获取文件的函数 传入地址和文件名
     return send_from_directory(app.config["UPLOAD_PATH"], filename)
+
 
 @app.route('/uploaded-images')
 def show_images():
@@ -142,14 +145,16 @@ def show_images():
     """
     return render_template('uploaded.html')
 
+
 # 上传多个文件
 from forms import MultiUploadForm
-from wtforms import ValidationError   # 验证错误
+from wtforms import ValidationError  # 验证错误
 from flask_wtf.csrf import validate_csrf  # 验证csrf令牌
 
-@app.route('/multi-upload',methods=["GET","POST"])
+
+@app.route('/multi-upload', methods=["GET", "POST"])
 def multi_upload():
-    form=MultiUploadForm()
+    form = MultiUploadForm()
     # 检查csrf令牌
     if request.method == 'POST':
         filenames = []
@@ -161,13 +166,12 @@ def multi_upload():
         # 检车文件是否存在
         if 'photo' not in request.files:
             flash("This field is required.")
-            return redirect(url_for('multi_upload'))
-        
+
         for f in request.files.getlist("photo"):
             # 检查文件类型
             if f and allowed_file(f.filename):
                 filename = random_filename(f.filename)
-                f.save(os.path.join(app.config["UPLOAD_PATH"],filename))
+                f.save(os.path.join(app.config["UPLOAD_PATH"], filename))
                 filenames.append(filename)
             else:
                 flash("Invalid file type.")
@@ -177,7 +181,48 @@ def multi_upload():
         return redirect(url_for("show_images"))
     return render_template("upload.html", form=form)
 
-app.config["ALLOWED_EXTENSIONS"] = ['png','jpg','jpeg','gif']
+
+app.config["ALLOWED_EXTENSIONS"] = ['png', 'jpg', 'jpeg', 'gif']
+
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit(".",1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+    """检查文件类型
+
+    """
+    return '.' in filename and filename.rsplit(
+        ".", 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+
+
+###################################3
+# 集成富文本编辑器 Flask-CKEditor
+app.config["CKEDITOR_SERVE_LOCAL"] = True
+
+from flask_ckeditor import CKEditor
+from forms import RichTextForm, RichTextForm2
+ckeditor = CKEditor(app)
+
+
+@app.route('/two_submits', methods=["GET", "POST"])
+def two_submit():
+    form = RichTextForm2()
+    if form.validate_on_submit():
+        title = form.title.data
+        body = form.body.data
+        if form.save.data:
+            flash("You click the \"Save\" button. ")
+        elif form.publish.data:
+            flash('You click the "Publish" button.')
+        flash('Your post is published!')
+        return render_template('post.html', title=title, body=body)
+    return render_template("ckeditor2.html", form=form)
+
+
+@app.route('/ckeditor')
+def ckeditor():
+    form = RichTextForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        body = form.body.data
+        flash("You post is published!")
+        return render_template("post.html", title=title, body=body)
+    return render_template("ckeditor.html", form=form)

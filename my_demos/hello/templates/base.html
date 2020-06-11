@@ -2,14 +2,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-        {% block head%}
+        {% block head %}
             <meta charset="utf-8">
             <title>{%block title%}欢迎界面{%endblock title%}</title>
             {{static_file("icon","img/favicon.png")}}
             {%block styles%}
+            <!-- #css脚本 -->
             {{static_file('css','style.css')}}
             {%endblock styles%}
-        {%endblock head%}
+        {% endblock head %}
     </head>
     <body>
         <nav>
@@ -33,7 +34,7 @@
             {%endblock footer%}
         </footer>
         {%block scripts%}
-
+<!-- #JavaScript脚本 -->
         {%endblock scripts%}
     </body>
 </html>
