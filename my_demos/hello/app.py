@@ -217,7 +217,7 @@ def two_submit():
     return render_template("ckeditor2.html", form=form)
 
 
-@app.route('/ckeditor')
+@app.route('/ckeditor', methods=["GET", "POST"])
 def ckeditor():
     form = RichTextForm()
     if form.validate_on_submit():
@@ -226,3 +226,18 @@ def ckeditor():
         flash("You post is published!")
         return render_template("post.html", title=title, body=body)
     return render_template("ckeditor.html", form=form)
+
+############################
+# 数据库 SQLite Flask_SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
+
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('DATABASE_URL','sqlite:///'+os.path.join(app.root_path,'data.db'))
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db=SQLAlchemy(app)
+
+class Note(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+
+    def __repr__(self):
+        return "<Note %r>"% self.body
